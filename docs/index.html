@@ -48,6 +48,12 @@
         .option input {
             margin-right: 10px;
         }
+        .correct-option {
+            background-color: #d4edda !important; /* Green */
+        }
+        .incorrect-option {
+            background-color: #f8d7da !important; /* Red */
+        }
         .navigation {
             display: flex;
             justify-content: space-between;
@@ -117,7 +123,6 @@
     <script>
         // Parse the Excel data
         const rawData = `Sheet1
-0 | ID | Topic | Question | Option A | Option B | Option C | Option D | Correct Option | Correct Answer | Difficulty | Source 
 1 | 1 | Mechanical Properties | Stress is defined as | change in length per unit length | load times distance | force per unit area | energy per volume | C | force per unit area | Medium | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf 
 2 | 2 | Mechanical Properties | Strain is defined as | force per unit area | change in length per unit original length | energy per volume | load times distance | B | change in length per unit original length | Medium | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf 
 3 | 3 | Mechanical Properties | Young's modulus is the ratio of | stress to strain | force to area | strain to stress | area to force | A | stress to strain | Easy | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf 
@@ -232,6 +237,7 @@
         const questions = processRawData(rawData);
         let currentQuestion = 0;
         let userAnswers = [];
+        let feedbackShown = false; // Track if feedback has been shown for current question
 
         // Initialize the quiz
         function initQuiz() {
@@ -242,6 +248,7 @@
         // Display the current question
         function displayQuestion() {
             const q = questions[currentQuestion];
+            feedbackShown = false; // Reset feedback flag for new question
             
             document.getElementById('topic').textContent = q.topic;
             document.getElementById('question-number').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
@@ -254,24 +261,33 @@
             for (const [key, value] of Object.entries(q.options)) {
                 const optionDiv = document.createElement('div');
                 optionDiv.className = 'option';
+                optionDiv.id = `option-${key}`;
                 
                 const radio = document.createElement('input');
                 radio.type = 'radio';
                 radio.name = 'answer';
                 radio.value = key;
-                radio.id = `option-${key}`;
+                radio.id = `radio-${key}`;
                 
                 if (userAnswers[currentQuestion] === key) {
                     radio.checked = true;
                 }
                 
                 const label = document.createElement('label');
-                label.htmlFor = `option-${key}`;
+                label.htmlFor = `radio-${key}`;
                 label.textContent = `${key}. ${value}`;
                 
                 optionDiv.appendChild(radio);
                 optionDiv.appendChild(label);
                 optionsContainer.appendChild(optionDiv);
+                
+                // Add event listener to radio button
+                radio.addEventListener('change', function() {
+                    if (!feedbackShown) {
+                        showFeedback(this.value);
+                        feedbackShown = true;
+                    }
+                });
             }
             
             // Update navigation buttons
@@ -284,9 +300,29 @@
                 `Question ${currentQuestion + 1} of ${questions.length}`;
         }
 
+        // Show feedback for selected answer
+        function showFeedback(selectedOption) {
+            const q = questions[currentQuestion];
+            const correctOption = q.correctOption;
+            
+            // Update user answer
+            userAnswers[currentQuestion] = selectedOption;
+            
+            // Apply styling based on correctness
+            for (const key of Object.keys(q.options)) {
+                const optionDiv = document.getElementById(`option-${key}`);
+                
+                if (key === correctOption) {
+                    optionDiv.classList.add('correct-option');
+                } else {
+                    optionDiv.classList.add('incorrect-option');
+                }
+            }
+        }
+
         // Navigate to the next question
         function nextQuestion() {
-            // Save current answer
+            // Save current answer if not already saved
             const selectedOption = document.querySelector('input[name="answer"]:checked');
             if (selectedOption) {
                 userAnswers[currentQuestion] = selectedOption.value;
@@ -302,7 +338,7 @@
 
         // Navigate to the previous question
         function previousQuestion() {
-            // Save current answer
+            // Save current answer if not already saved
             const selectedOption = document.querySelector('input[name="answer"]:checked');
             if (selectedOption) {
                 userAnswers[currentQuestion] = selectedOption.value;
