@@ -41,12 +41,23 @@
             border: 1px solid #eee;
             border-radius: 3px;
             cursor: pointer;
+            position: relative;
         }
         .option:hover {
             background-color: #f5f5f5;
         }
         .option input {
-            margin-right: 10px;
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .option label {
+            display: block;
+            padding-left: 25px;
+            cursor: pointer;
+        }
+        .option input:checked + label {
+            font-weight: bold;
         }
         .correct-option {
             background-color: #d4edda !important; /* Green */
@@ -123,7 +134,6 @@
     <script>
         // Parse the Excel data
         const rawData = `Sheet1
-0 | ID | Topic | Question | Option A | Option B | Option C | Option D | Correct Option | Correct Answer | Difficulty | Source 
 1 | 1 | Mechanical Properties | Stress is defined as | change in length per unit length | load times distance | force per unit area | energy per volume | C | force per unit area | Medium | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf 
 2 | 2 | Mechanical Properties | Strain is defined as | force per unit area | change in length per unit original length | energy per volume | load times distance | B | change in length per unit original length | Medium | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf 
 3 | 3 | Mechanical Properties | Young's modulus is the ratio of | stress to strain | force to area | strain to stress | area to force | A | stress to strain | Easy | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf 
@@ -164,8 +174,47 @@
 38 | 38 | Nonferrous Metals | Brass is an alloy of | copper and zinc | copper and tin | aluminum and copper | iron and carbon | A | copper and zinc | Easy | Nonferous.pdf 
 39 | 39 | Nonferrous Metals | Bronze is primarily an alloy of | copper and tin | copper and zinc | aluminum and copper | iron and carbon | A | copper and tin | Easy | Nonferous.pdf 
 40 | 40 | Nonferrous Metals | Which nonferrous metal is used in aircraft due to its high strength-to-weight ratio? | Titanium | Copper | Lead | Zinc | A | Titanium | Medium | Nonferous.pdf 
-... (add more questions until 300)`;
-
+41 | 41 | Mechanical Properties | The ratio of load to original cross-sectional area is called | engineering stress | true stress | engineering strain | true strain | A | engineering stress | Medium | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf
+42 | 42 | Mechanical Properties | The ratio of load to instantaneous cross-sectional area is called | engineering stress | true stress | engineering strain | true strain | B | true stress | Medium | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf
+43 | 43 | Mechanical Properties | The ratio of change in length to original length is called | engineering stress | true stress | engineering strain | true strain | C | engineering strain | Easy | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf
+44 | 44 | Mechanical Properties | The ratio of change in length to instantaneous length is called | engineering stress | true stress | engineering strain | true strain | D | true strain | Medium | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf
+45 | 45 | Mechanical Properties | The maximum stress a material can withstand without permanent deformation is called | yield strength | ultimate tensile strength | fracture strength | elastic limit | A | yield strength | Easy | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf
+46 | 46 | Mechanical Properties | The maximum stress a material can withstand is called | yield strength | ultimate tensile strength | fracture strength | elastic limit | B | ultimate tensile strength | Easy | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf
+47 | 47 | Mechanical Properties | The stress at which fracture occurs is called | yield strength | ultimate tensile strength | fracture strength | elastic limit | C | fracture strength | Easy | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf
+48 | 48 | Mechanical Properties | The stress below which no plastic deformation occurs is called | yield strength | ultimate tensile strength | fracture strength | elastic limit | D | elastic limit | Medium | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf
+49 | 49 | Mechanical Properties | The ability of a material to absorb energy before fracture is called | toughness | hardness | ductility | strength | A | toughness | Medium | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf
+50 | 50 | Mechanical Properties | The resistance of a material to indentation or scratching is called | toughness | hardness | ductility | strength | B | hardness | Easy | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf
+51 | 51 | Mechanical Properties | The ability of a material to undergo plastic deformation without fracture is called | toughness | hardness | ductility | strength | C | ductility | Easy | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf
+52 | 52 | Mechanical Properties | The ability of a material to withstand load without deformation is called | toughness | hardness | ductility | strength | D | strength | Easy | 1_Mechanical Property of Materials_ABL[RE] 1_2568.pdf
+53 | 53 | Steelmaking | The basic oxygen furnace is used for | producing pig iron | converting pig iron to steel | casting steel | refining steel | B | converting pig iron to steel | Medium | 4 SteelMakingTypeCastIronsCorrosion_MaterialsManu_1_68.pdf
+54 | 54 | Steelmaking | The electric arc furnace is used for | producing pig iron | converting pig iron to steel | recycling scrap steel | refining steel | C | recycling scrap steel | Medium | 4 SteelMakingTypeCastIronsCorrosion_MaterialsManu_1_68.pdf
+55 | 55 | Steelmaking | Limestone is added in the blast furnace as a | fuel | reducing agent | flux | oxidizing agent | C | flux | Medium | 4 SteelMakingTypeCastIronsCorrosion_MaterialsManu_1_68.pdf
+56 | 56 | Steelmaking | Coke is used in the blast furnace as a | fuel | reducing agent | both fuel and reducing agent | flux | C | both fuel and reducing agent | Easy | 4 SteelMakingTypeCastIronsCorrosion_MaterialsManu_1_68.pdf
+57 | 57 | Cast Irons | White cast iron has | graphite flakes | nodular graphite | cementite | no carbon | C | cementite | Medium | 4 SteelMakingTypeCastIronsCorrosion_MaterialsManu_1_68.pdf
+58 | 58 | Cast Irons | Malleable cast iron is produced by | heat treatment of white cast iron | adding magnesium to molten iron | slow cooling | rapid cooling | A | heat treatment of white cast iron | Medium | 4 SteelMakingTypeCastIronsCorrosion_MaterialsManu_1_68.pdf
+59 | 59 | Cast Irons | Nodular cast iron is produced by | heat treatment | adding magnesium to molten iron | slow cooling | rapid cooling | B | adding magnesium to molten iron | Medium | 4 SteelMakingTypeCastIronsCorrosion_MaterialsManu_1_68.pdf
+60 | 60 | Cast Irons | Gray cast iron has good | machinability | ductility | toughness | weldability | A | machinability | Medium | 4 SteelMakingTypeCastIronsCorrosion_MaterialsManu_1_68.pdf
+61 | 61 | Corrosion | Galvanic corrosion occurs when | two dissimilar metals are in electrical contact in an electrolyte | a metal is exposed to oxygen | a metal is exposed to water | a metal is exposed to acid | A | two dissimilar metals are in electrical contact in an electrolyte | Medium | 4 SteelMakingTypeCastIronsCorrosion_MaterialsManu_1_68.pdf
+62 | 62 | Corrosion | Pitting corrosion is a form of | uniform corrosion | localized corrosion | galvanic corrosion | crevice corrosion | B | localized corrosion | Medium | 4 SteelMakingTypeCastIronsCorrosion_MaterialsManu_1_68.pdf
+63 | 63 | Corrosion | The process of coating steel with zinc is called | galvanizing | anodizing | tinning | electroplating | A | galvanizing | Easy | 4 SteelMakingTypeCastIronsCorrosion_MaterialsManu_1_68.pdf
+64 | 64 | Corrosion | The process of coating steel with tin is called | galvanizing | anodizing | tinning | electroplating | C | tinning | Easy | 4 SteelMakingTypeCastIronsCorrosion_MaterialsManu_1_68.pdf
+65 | 65 | Corrosion | The process of forming a protective oxide layer on aluminum is called | galvanizing | anodizing | tinning | electroplating | B | anodizing | Medium | 4 SteelMakingTypeCastIronsCorrosion_MaterialsManu_1_68.pdf
+66 | 66 | Polymer | Thermoplastic polymers can be | melted and reshaped | not melted after curing | cross-linked | vulcanized | A | melted and reshaped | Easy | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+67 | 67 | Polymer | Thermosetting polymers can be | melted and reshaped | not melted after curing | easily recycled | remolded | B | not melted after curing | Easy | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+68 | 68 | Polymer | The process of adding sulfur to rubber is called | vulcanization | polymerization | cross-linking | curing | A | vulcanization | Medium | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+69 | 69 | Polymer | The process of joining monomers to form a polymer is called | vulcanization | polymerization | cross-linking | curing | B | polymerization | Easy | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+70 | 70 | Composites | The matrix in a composite material | holds the reinforcement together | provides strength | provides stiffness | is always a metal | A | holds the reinforcement together | Medium | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+71 | 71 | Composites | The reinforcement in a composite material | provides strength and stiffness | holds the matrix together | is always a polymer | is always a ceramic | A | provides strength and stiffness | Medium | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+72 | 72 | Composites | A composite with fibers aligned in one direction has | high strength in the fiber direction | high strength in all directions | isotropic properties | high toughness in all directions | A | high strength in the fiber direction | Medium | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+73 | 73 | Composites | A composite with randomly oriented fibers has | high strength in the fiber direction | isotropic properties | anisotropic properties | high toughness in one direction | B | isotropic properties | Medium | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+74 | 74 | Ceramics | Advanced ceramics are based on | clay | silica | alumina | zirconia | C | alumina | Medium | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+75 | 75 | Ceramics | Ceramics are typically | ductile | brittle | tough | malleable | B | brittle | Easy | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+76 | 76 | Ceramics | Ceramics have high | electrical conductivity | thermal conductivity | melting point | ductility | C | melting point | Easy | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+77 | 77 | Ceramics | Ceramics are good | electrical conductors | thermal conductors | insulators | magnetic materials | C | insulators | Easy | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+78 | 78 | Powder Metallurgy | The first step in powder metallurgy is | mixing | compacting | sintering | powder production | D | powder production | Medium | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+79 | 79 | Powder Metallurgy | The process of mixing metal powders with lubricants is called | blending | compacting | sintering | powder production | A | blending | Easy | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+80 | 80 | Powder Metallurgy | The process of pressing metal powders into a die is called | blending | compacting | sintering | powder production | B | compacting | Easy | 6 Polymer Composites powder metallurgy and ceramic EN 68.pdf
+)`;
         // Process the raw data into a structured format
         function processRawData(rawData) {
             const lines = rawData.split('\n');
@@ -243,10 +292,14 @@
                 optionDiv.appendChild(label);
                 optionsContainer.appendChild(optionDiv);
                 
-                // Add event listener to radio button
-                radio.addEventListener('change', function() {
+                // Add click event to the entire option div
+                optionDiv.addEventListener('click', function(e) {
+                    // If feedback hasn't been shown yet, show it
                     if (!feedbackShown) {
-                        showFeedback(this.value);
+                        // Check the radio button
+                        radio.checked = true;
+                        // Show feedback
+                        showFeedback(key);
                         feedbackShown = true;
                     }
                 });
