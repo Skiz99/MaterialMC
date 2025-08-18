@@ -131,11 +131,7 @@
             font-size: 1.5rem;
             box-shadow: 0 8px 16px rgba(0, 113, 227, 0.2);
             transition: var(--transition);
-            animation: rotate 10s linear infinite;
-        }
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            animation: bounce 1.5s ease-in-out infinite;
         }
         .logo-icon:hover {
             transform: scale(1.1) rotate(10deg);
@@ -375,11 +371,91 @@
             opacity: 0.8;
         }
         
+        /* Saved Questions Section */
+        .saved-questions-section {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Remove ripple effect from saved questions button */
+        #view-saved-btn::before {
+            display: none !important;
+        }
+        
+        /* Keep the standard hover effect without ripple */
+        #view-saved-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+        
         /* Topics Section */
         .topics-section {
             margin-top: 2rem;
             position: relative;
             z-index: 1;
+        }
+        
+        /* Add scroll indicators */
+        .topics-list-container {
+            position: relative;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 0.5rem;
+            background: var(--bg-secondary);
+            box-shadow: 0 2px 8px rgba(0, 113, 227, 0.1);
+            transition: var(--transition);
+        }
+        
+        .topics-list-container:hover {
+            border-color: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.2);
+        }
+        
+        /* Add visual indicator for scrollable content */
+        .topics-list-container::before {
+            content: '↓ Scrollable ↓';
+            position: absolute;
+            top: -20px;
+            right: 10px;
+            font-size: 0.7rem;
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.8;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        /* Add a scroll hint message */
+        .scroll-hint {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--primary);
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            background: linear-gradient(135deg, rgba(0, 113, 227, 0.05), rgba(90, 200, 250, 0.05));
+            border-radius: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            animation: fadeInUp 0.5s ease;
+        }
+        
+        .scroll-hint i {
+            animation: scroll-wheel 1.5s ease-in-out infinite;
+        }
+        
+        /* Force scrollbar to always show when content is scrollable */
+        .topics-list::-webkit-scrollbar {
+            width: 10px;
+            display: block !important;
+        }
+        
+        /* Ensure scrollbar is visible on hover or when scrolling */
+        .topics-list {
+            overflow-y: scroll !important; /* Always show scrollbar track */
         }
         .topics-header {
             display: flex;
@@ -420,12 +496,46 @@
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
-            max-height: 500px; /* You can adjust this height */
-            overflow-y: auto;   /* This line enables vertical scrolling when needed */
+            max-height: 200px; /* Further reduced to ensure scrolling */
+            overflow-y: scroll; /* Always show scrollbar */
+            overflow-x: hidden; /* Prevents horizontal scroll */
             transition: max-height 0.3s ease;
+            padding-right: 5px; /* Space for scrollbar */
+            position: relative;
+            scroll-behavior: smooth;
         }
+        
+        /* Custom scrollbar styling - more visible */
+        .topics-list::-webkit-scrollbar {
+            width: 10px; /* Wider scrollbar for better visibility */
+        }
+        
+        .topics-list::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 5px;
+            margin: 5px 0; /* Add margin to track */
+        }
+        
+        .topics-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+            border: 2px solid var(--bg-card); /* Add border for contrast */
+        }
+        
+        .topics-list::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Firefox scrollbar support */
+        .topics-list {
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--bg-tertiary);
+        }
+        
         .topics-list.collapsed {
             max-height: 0;
+            overflow: hidden;
+            padding-right: 0;
         }
         .topic-item {
             padding: 0.75rem 1rem;
@@ -438,6 +548,8 @@
             align-items: center;
             position: relative;
             overflow: hidden;
+            flex-shrink: 0; /* Prevent items from shrinking */
+            min-height: 50px; /* Ensure consistent height */
         }
         .topic-item::before {
             content: '';
@@ -750,7 +862,7 @@
         .option.correct .option-icon,
         .option.incorrect .option-icon {
             opacity: 1;
-            animation: bounceIn 0.5s ease;
+            animation: bounceIn 5.5s ease;
         }
         @keyframes bounceIn {
             0% { transform: scale(0); opacity: 0; }
@@ -840,8 +952,13 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
         }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 113, 227, 0.3);
+        }
         .btn-secondary {
-            background: var(--bg-secondary);
+            background: var(--bg-tertiary);
             color: var(--text-primary);
         }
         .btn-success {
@@ -851,6 +968,9 @@
         .btn-danger {
             background: var(--accent);
             color: white;
+        }
+        .btn-danger:hover {
+            background: #ff5544;
         }
         .btn-warning {
             background: var(--warning);
@@ -974,6 +1094,16 @@
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
+        }
+        @keyframes scroll-wheel {
+            0%, 100% {
+                transform: translateY(-4px);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(4px);
+                opacity: 1;
+            }
         }
         .summary-card.incorrect .summary-icon {
             color: var(--accent);
@@ -1390,6 +1520,22 @@
                         </div>
                     </div>
                 </div>
+                <div class="saved-questions-section" style="margin-top: 2rem; margin-bottom: 2rem; animation: fadeInLeft 0.8s ease 0.2s both;">
+                    <button class="btn btn-primary" id="view-saved-btn" style="width: 100%; justify-content: center; position: relative;">
+                        <i class="fas fa-bookmark"></i>
+                        <span>View Saved Questions</span>
+                        <span id="saved-count" style="
+                            background: rgba(255, 255, 255, 0.2);
+                            padding: 0.125rem 0.375rem;
+                            border-radius: 9999px;
+                            margin-left: 0.5rem;
+                            font-weight: 600;
+                            min-width: 1.5rem;
+                            display: inline-block;
+                            text-align: center;
+                        ">0</span>
+                    </button>
+                </div>
                 <div class="topics-section">
                     <div class="topics-header" id="topics-header">
                         <h3 class="topics-title">
@@ -1401,7 +1547,12 @@
                             <span id="collapse-text">Collapse</span>
                         </button>
                     </div>
-                    <div class="topics-list" id="topics-list">
+                    <div class="topics-list-container">
+                        <div class="topics-list" id="topics-list">
+                        </div>
+                        <div class="scroll-hint">
+                            <i class="fas fa-mouse"></i> Scroll to see more topics
+                        </div>
                     </div>
                 </div>
             </aside>
@@ -1446,6 +1597,10 @@
                             <button class="btn btn-primary" id="next-btn">
                                 Next
                                 <i class="fas fa-arrow-right"></i>
+                            </button>
+                            <button class="btn btn-danger" id="finish-btn">
+                                <i class="fas fa-flag-checkered"></i>
+                                See Results
                             </button>
                         </div>
                         <div class="action-buttons">
@@ -1493,6 +1648,37 @@
             </main>
         </div>
     </div>
+    <!-- Saved Questions Modal -->
+    <div class="modal-overlay" id="saved-modal" role="dialog" aria-modal="true" aria-labelledby="saved-title">
+        <div class="modal" style="max-width: 800px; max-height: 90vh;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="saved-title">Saved Questions</h3>
+                <button class="modal-close" id="saved-modal-close" aria-label="Close dialog">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
+                <div id="saved-questions-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <!-- Saved questions will be populated here -->
+                </div>
+                <div id="no-saved-questions" style="text-align: center; padding: 2rem; display: none;">
+                    <i class="fas fa-bookmark" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 1rem;"></i>
+                    <p style="color: var(--text-secondary);">No saved questions yet. Bookmark questions during the quiz to save them here!</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="clear-saved-btn">
+                    <i class="fas fa-trash"></i>
+                    Clear All
+                </button>
+                <button type="button" class="btn btn-primary" id="practice-saved-btn">
+                    <i class="fas fa-play"></i>
+                    Practice Saved Questions
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <div class="modal-overlay" id="report-modal" role="dialog" aria-modal="true" aria-labelledby="report-title">
         <div class="modal">
             <div class="modal-header">
@@ -1980,6 +2166,11 @@
             skip: 3
         };
         let achievements = [];
+        let savedQuestions = JSON.parse(localStorage.getItem('savedQuestions')) || [];
+
+        
+        // Debug logging for saved questions
+        console.log('DEBUG: Loaded saved questions from localStorage:', savedQuestions);
         
         // Show achievement notification
         function showAchievement(text) {
@@ -2050,6 +2241,22 @@
                 this.classList.add('active');
                 quizMode = this.dataset.mode;
                 lastActiveMode = quizMode;
+                
+                // For exam mode, pull 100 random questions from all topics
+                if (quizMode === 'exam') {
+                    // Get all questions from all topics
+                    const allTopicsQuestions = [];
+                    Object.values(groupQuestionsByTopic()).forEach(topicQuestions => {
+                        allTopicsQuestions.push(...topicQuestions);
+                    });
+                    
+                    // Shuffle all questions
+                    const shuffled = [...allTopicsQuestions].sort(() => Math.random() - 0.5);
+                    
+                    // Take the first 100 questions or all if less than 100
+                    questions = shuffled.slice(0, 100);
+                }
+                
                 resetQuiz();
             });
         });
@@ -2097,6 +2304,18 @@
                 
                 topicsListContainer.appendChild(topicItem);
             });
+            
+            // Check if scrolling is needed and show/hide scroll hint
+            setTimeout(() => {
+                const scrollHint = document.querySelector('.scroll-hint');
+                if (scrollHint && topicsListContainer.scrollHeight > topicsListContainer.clientHeight) {
+                    scrollHint.style.display = 'block';
+                    console.log('Topics list is scrollable. Height:', topicsListContainer.scrollHeight, 'Client height:', topicsListContainer.clientHeight);
+                } else if (scrollHint) {
+                    scrollHint.style.display = 'none';
+                    console.log('Topics list is not scrollable. Height:', topicsListContainer.scrollHeight, 'Client height:', topicsListContainer.clientHeight);
+                }
+            }, 100);
         }
         
         function resetQuiz() {
@@ -2281,14 +2500,45 @@
         }
         
         document.getElementById('bookmark-btn').addEventListener('click', () => {
+            const currentQ = questions[currentQuestion];
+            const questionId = currentQ.id;
+            
+            // Toggle bookmark state
             markedForReview[currentQuestion] = !markedForReview[currentQuestion];
+            
+            // Update saved questions in localStorage
+            if (markedForReview[currentQuestion]) {
+                // Add to saved questions if not already there
+                if (!savedQuestions.find(q => q.id === questionId)) {
+                    savedQuestions.push({
+                        ...currentQ,
+                        savedDate: new Date().toISOString()
+                    });
+                    console.log('DEBUG: Question saved:', questionId, currentQ.question);
+                }
+            } else {
+                // Remove from saved questions
+                savedQuestions = savedQuestions.filter(q => q.id !== questionId);
+                console.log('DEBUG: Question removed from saved:', questionId);
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('savedQuestions', JSON.stringify(savedQuestions));
+            console.log('DEBUG: Updated saved questions in localStorage:', savedQuestions.length, 'questions');
+            
+            // Update UI
             const bookmarkBtn = document.getElementById('bookmark-btn');
             bookmarkBtn.querySelector('i').className = markedForReview[currentQuestion] ? 'fas fa-bookmark' : 'far fa-bookmark';
             bookmarkBtn.setAttribute('aria-pressed', markedForReview[currentQuestion]);
+            
+            // Show feedback
+            showAchievement(markedForReview[currentQuestion] ? 'Question Saved!' : 'Question Removed from Saved');
+            updateSavedCount();
         });
         
         document.getElementById('prev-btn').addEventListener('click', previousQuestion);
         document.getElementById('next-btn').addEventListener('click', nextQuestion);
+        document.getElementById('finish-btn').addEventListener('click', showResults);
         
         function animateCard() {
             const quizCard = document.getElementById('quiz-card');
@@ -2505,8 +2755,187 @@
             closeModal();
         });
         
+        // Function to update saved questions count
+        function updateSavedCount() {
+            document.getElementById('saved-count').textContent = savedQuestions.length;
+            console.log('DEBUG: Updated saved count display:', savedQuestions.length);
+        }
+        
+        // Function to display saved questions in modal
+        function displaySavedQuestions() {
+            const listContainer = document.getElementById('saved-questions-list');
+            const noQuestionsMsg = document.getElementById('no-saved-questions');
+            
+            listContainer.innerHTML = '';
+            
+            if (savedQuestions.length === 0) {
+                listContainer.style.display = 'none';
+                noQuestionsMsg.style.display = 'block';
+                document.getElementById('practice-saved-btn').disabled = true;
+                document.getElementById('clear-saved-btn').disabled = true;
+                console.log('DEBUG: No saved questions to display');
+            } else {
+                listContainer.style.display = 'flex';
+                noQuestionsMsg.style.display = 'none';
+                document.getElementById('practice-saved-btn').disabled = false;
+                document.getElementById('clear-saved-btn').disabled = false;
+                
+                savedQuestions.forEach((q, index) => {
+                    const questionCard = document.createElement('div');
+                    questionCard.style.cssText = `
+                        background: var(--bg-secondary);
+                        border-radius: 12px;
+                        padding: 1rem;
+                        position: relative;
+                        transition: var(--transition);
+                        cursor: pointer;
+                    `;
+                    
+                    questionCard.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                                    <span style="background: var(--primary); color: white; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.75rem;">
+                                        ${index + 1}
+                                    </span>
+                                    <span style="color: var(--text-tertiary); font-size: 0.875rem;">
+                                        ${q.topic}
+                                    </span>
+                                </div>
+                                <p style="font-weight: 500; margin-bottom: 0.5rem;">${q.question}</p>
+                                <p style="color: var(--success); font-size: 0.875rem;">
+                                    <i class="fas fa-check-circle"></i> ${q.correctAnswer}
+                                </p>
+                                ${q.savedDate ? `
+                                    <p style="color: var(--text-tertiary); font-size: 0.75rem; margin-top: 0.5rem;">
+                                        Saved: ${new Date(q.savedDate).toLocaleDateString()}
+                                    </p>
+                                ` : ''}
+                            </div>
+                            <button class="btn btn-icon" onclick="removeSavedQuestion(${q.id})" style="background: var(--accent); color: white;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    questionCard.addEventListener('mouseenter', () => {
+                        questionCard.style.background = 'var(--bg-tertiary)';
+                        questionCard.style.transform = 'translateX(5px)';
+                    });
+                    
+                    questionCard.addEventListener('mouseleave', () => {
+                        questionCard.style.background = 'var(--bg-secondary)';
+                        questionCard.style.transform = 'translateX(0)';
+                    });
+                    
+                    listContainer.appendChild(questionCard);
+                });
+                
+                console.log('DEBUG: Displayed', savedQuestions.length, 'saved questions in modal');
+            }
+        }
+        
+        // Function to remove a saved question
+        window.removeSavedQuestion = function(questionId) {
+            savedQuestions = savedQuestions.filter(q => q.id !== questionId);
+            localStorage.setItem('savedQuestions', JSON.stringify(savedQuestions));
+            updateSavedCount();
+            displaySavedQuestions();
+            showAchievement('Question removed from saved!');
+            console.log('DEBUG: Removed question', questionId, 'from saved questions');
+        };
+        
+        // View saved questions button - opens modal
+        document.getElementById('view-saved-btn').addEventListener('click', () => {
+            console.log('DEBUG: Opening saved questions modal. Total saved:', savedQuestions.length);
+            document.getElementById('saved-modal').classList.add('active');
+            displaySavedQuestions();
+        });
+        
+        // Practice saved questions button
+        document.getElementById('practice-saved-btn').addEventListener('click', () => {
+            if (savedQuestions.length === 0) return;
+            
+            console.log('DEBUG: Starting practice with saved questions:', savedQuestions.length);
+            
+            // Close modal
+            document.getElementById('saved-modal').classList.remove('active');
+            
+            // Set questions to saved questions
+            questions = [...savedQuestions];
+            
+            // Update UI to show saved questions mode
+            document.querySelectorAll('.topic-item').forEach(item => item.classList.remove('active'));
+            
+            // Add a visual indicator that we're in saved questions mode
+            const topicBadge = document.getElementById('topic-badge');
+            if (topicBadge) {
+                topicBadge.innerHTML = '<i class="fas fa-bookmark"></i> Saved Questions';
+            }
+            
+            // Reset and start quiz with saved questions
+            resetQuiz();
+            showAchievement(`Starting practice with ${savedQuestions.length} saved questions!`);
+        });
+        
+        // Clear all saved questions
+        document.getElementById('clear-saved-btn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all saved questions?')) {
+                savedQuestions = [];
+                localStorage.setItem('savedQuestions', JSON.stringify(savedQuestions));
+                updateSavedCount();
+                displaySavedQuestions();
+                showAchievement('All saved questions cleared!');
+                console.log('DEBUG: Cleared all saved questions');
+            }
+        });
+        
+        // Close saved questions modal
+        document.getElementById('saved-modal-close').addEventListener('click', () => {
+            document.getElementById('saved-modal').classList.remove('active');
+        });
+        
+        document.getElementById('saved-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'saved-modal') {
+                document.getElementById('saved-modal').classList.remove('active');
+            }
+        });
+        
+        // Function to check if current question is saved
+        function updateBookmarkState() {
+            const currentQ = questions[currentQuestion];
+            if (currentQ) {
+                const isSaved = savedQuestions.some(q => q.id === currentQ.id);
+                markedForReview[currentQuestion] = isSaved;
+                console.log('DEBUG: Question', currentQ.id, 'bookmark state:', isSaved);
+            }
+        }
+        
+        // Modify displayQuestion to update bookmark state
+        const originalDisplayQuestion = displayQuestion;
+        displayQuestion = function() {
+            originalDisplayQuestion();
+            updateBookmarkState();
+            
+            // Update bookmark button UI based on saved state
+            const bookmarkBtn = document.getElementById('bookmark-btn');
+            if (bookmarkBtn) {
+                const isSaved = savedQuestions.some(q => q.id === questions[currentQuestion].id);
+                bookmarkBtn.querySelector('i').className = isSaved ? 'fas fa-bookmark' : 'far fa-bookmark';
+                bookmarkBtn.setAttribute('aria-pressed', isSaved);
+            }
+        };
+        
         // Initialize
         initTopics();
+        updateSavedCount();
+        
+        // Log initial state
+        console.log('DEBUG: Application initialized');
+        console.log('DEBUG: Total questions available:', allQuestions.length);
+        console.log('DEBUG: Saved questions:', savedQuestions.length);
+        console.log('DEBUG: Saved questions IDs:', savedQuestions.map(q => q.id));
+        
         const firstTopicElement = document.querySelector('.topic-item');
         if (firstTopicElement) {
             firstTopicElement.click();
